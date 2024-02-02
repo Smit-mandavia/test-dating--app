@@ -1,8 +1,11 @@
 import React from 'react';
 import './loginindex.css';
-import GoogleLoginSocial from './GoogleLoginSocial'; // Import the Social component
+import ReactDOM from 'react-dom';
+import GoogleLogin from "@stack-pulse/next-google-login";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+  const navigate = useNavigate();
   console.log('LoginPage is being rendered');
   const handleFormSubmit = (event) => {
     event.preventDefault();
@@ -13,6 +16,14 @@ function LoginPage() {
     console.log('Form submitted:', { email, password });
     // You can send the form data to your backend for authentication
   };
+
+  const responseGoogle = (response) => {
+    console.log(response);
+    // Handle the response here. You might want to send the token to your server.
+
+    // Redirect to the success page
+    navigate('/success');
+  }
 
   return (
     <div>
@@ -36,7 +47,13 @@ function LoginPage() {
       </div>
 
       <br />
-      <GoogleLoginSocial />
+      <GoogleLogin
+        clientId="1095865446899-ij588crmvvagq1jco12pvljahfma6oo6.apps.googleusercontent.com"
+        buttonText="Login"
+        onSuccess={responseGoogle}
+        onFailure={responseGoogle}
+        cookiePolicy={"single_host_origin"}
+      />
     </div>
   );
 }

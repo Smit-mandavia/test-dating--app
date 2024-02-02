@@ -5,9 +5,8 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
   googleId: String,
   displayName: String,
-  firstName: String,
-  lastName: String,
-  image: String,
+  picture:String,
+  email:String,
   birthdate: Date,
 });
 
