@@ -1,29 +1,40 @@
-import React from 'react';
-import './loginindex.css';
-import ReactDOM from 'react-dom';
+import React from "react";
+import "./loginindex.css";
+import ReactDOM from "react-dom";
 import GoogleLogin from "@stack-pulse/next-google-login";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const navigate = useNavigate();
-  console.log('LoginPage is being rendered');
+  console.log("LoginPage is being rendered");
   const handleFormSubmit = (event) => {
     event.preventDefault();
     // Handle login form submission here
     const formData = new FormData(event.target);
-    const email = formData.get('email');
-    const password = formData.get('password');
-    console.log('Form submitted:', { email, password });
+    const email = formData.get("email");
+    const password = formData.get("password");
+    console.log("Form submitted:", { email, password });
     // You can send the form data to your backend for authentication
   };
 
   const responseGoogle = (response) => {
-    console.log(response);
-    // Handle the response here. You might want to send the token to your server.
+    console.log("Google login response:", response);
+    const googleUser = response.profileObj;
+    const { tokenId } = response;
+    console.log("Token ID:", tokenId);
+    console.log("Google user information:", googleUser);
+    const { profileObj, tokenResponse } = response;
+    const { name, email, imageUrl, googleId } = profileObj;
 
-    // Redirect to the success page
-    navigate('/success');
-  }
+    // console.log("Name:", name);
+    // console.log("Email:", email);
+    // console.log("Picture:", imageUrl);
+    // console.log("Google ID:", googleId);
+    // console.log("Token Response:", tokenResponse);
+
+    navigate("/success");
+    navigate('/birthdate', { state: { name, email, imageUrl, googleId } });
+  };
 
   return (
     <div>
@@ -43,7 +54,9 @@ function LoginPage() {
       </form>
 
       <div>
-        <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+        <p>
+          Don't have an account? <a href="/signup">Sign up here</a>
+        </p>
       </div>
 
       <br />
