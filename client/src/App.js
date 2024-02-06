@@ -3,6 +3,7 @@ import React from 'react';
 import LoginPage from './LoginPage';
 import SuccessPage from './SuccessPage';
 import BirthdateSelection from './BirthdateSelection';
+import ProfileSummary from './ProfileSummary';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/success" element={<SuccessPage />} />
         <Route path="/birthdate" element={<BirthdateSelection />} />
+        <Route path="/profile-summary" element={<ProfileSummary />} />
       </Routes>
     </Router>
   );

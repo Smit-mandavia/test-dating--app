@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from 'react';
 import "./loginindex.css";
 import ReactDOM from "react-dom";
 import GoogleLogin from "@stack-pulse/next-google-login";
@@ -7,6 +7,13 @@ import { useNavigate } from "react-router-dom";
 function LoginPage() {
   const navigate = useNavigate();
   console.log("LoginPage is being rendered");
+  useEffect(() => {
+    const name = localStorage.getItem('name');
+    // If all the required fields are present, redirect to the ProfileSummary page
+    if (name) {
+      navigate('/profile-summary');
+    }
+  }, []);
   const handleFormSubmit = (event) => {
     event.preventDefault();
     // Handle login form submission here

@@ -8,6 +8,11 @@ const UserSchema = new mongoose.Schema({
   picture:String,
   email:String,
   birthdate: Date,
+  gender:String,
+  interests: [{ // Add the new interests field
+    type: String
+  }],
+  crush: String,
 });
 
 // Create the user model

@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const express = require('express');
 const bodyParser = require('body-parser');
+const { use } = require('passport');
 const app = express();
 const PORT = process.env.PORT || 3001;
 const router = express.Router();
@@ -11,7 +12,7 @@ app.use(express.json())
 
 exports.saveUserData = async (req, res) => {
     try {
-        const { googleId, name, picture, email, birthdate } = req.body;
+        const { googleId, name, picture, email, birthdate,gender,interests,crush} = req.body;
         console.log('Received user data: backend!', req.body);
 
         let user = await User.findOne({ googleId: googleId });
@@ -23,7 +24,10 @@ exports.saveUserData = async (req, res) => {
                 displayName: name,
                 picture: picture,
                 email: email,
-                birthdate: birthdate
+                birthdate: birthdate,
+                gender: gender,
+                interests: interests,
+                crush: crush,
             });
         } else {
             // If the user already exists, update the necessary fields
@@ -31,6 +35,10 @@ exports.saveUserData = async (req, res) => {
             user.picture = picture;
             user.email = email;
             user.birthdate = birthdate;
+            user.gender = gender;
+            user.interests = interests;
+            user.crush = crush;
+
         }
 
         await user.save();
