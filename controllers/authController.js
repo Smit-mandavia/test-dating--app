@@ -1,11 +1,20 @@
 const passport = require("passport");
+const jwt = require('jsonwebtoken');
 
 exports.authenticateGoogle = passport.authenticate("google", { scope: ["profile", "email"] });
 
 exports.googleCallback = passport.authenticate("google", {
     successRedirect: "/auth/protected",
     failureRedirect: "/auth/google/failure",
-});
+}), (req, res) => {
+    // User has been authenticated successfully
+    const user = { id: req.user.id, name: req.user.name }; // This should be the user object from your database
+
+    const token = jwt.sign(user, process.env.SESSION_SECRET, { expiresIn: '3d' });
+
+    // Send the token to the client
+    res.json({ token });
+};
 
 exports.failure = (req, res) => {
     res.send("Something went wrong");

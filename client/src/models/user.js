@@ -5,10 +5,14 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
   googleId: String,
   displayName: String,
-  firstName: String,
-  lastName: String,
-  image: String,
+  picture:String,
+  email:String,
   birthdate: Date,
+  gender:String,
+  interests: [{ // Add the new interests field
+    type: String
+  }],
+  crush: String,
 });
 
 // Create the user model

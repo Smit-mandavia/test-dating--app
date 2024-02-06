@@ -4,6 +4,26 @@ import ReactDOM from "react-dom";
 import GoogleLogin from "@stack-pulse/next-google-login";
 import { useNavigate } from "react-router-dom";
 
+async function login() {
+  const response = await fetch('/auth/google/callback');
+  const data = await response.json();
+
+  // Store the JWT in the local storage
+  localStorage.setItem('jwt', data.token);
+}
+
+async function getProtectedData() {
+  const token = localStorage.getItem('jwt');
+
+  const response = await fetch('/auth/protected', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
+  const data = await response.json();
+  // Do something with the data
+}
 function LoginPage() {
   const navigate = useNavigate();
   console.log("LoginPage is being rendered");
@@ -24,7 +44,7 @@ function LoginPage() {
     // You can send the form data to your backend for authentication
   };
 
-  const responseGoogle = (response) => {
+  const responseGoogle = async(response) => {
     console.log("Google login response:", response);
     const googleUser = response.profileObj;
     const { tokenId } = response;
@@ -38,7 +58,7 @@ function LoginPage() {
     // console.log("Picture:", imageUrl);
     // console.log("Google ID:", googleId);
     // console.log("Token Response:", tokenResponse);
-
+    await login();
     navigate("/success");
     navigate('/birthdate', { state: { name, email, imageUrl, googleId } });
   };
