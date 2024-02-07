@@ -1,24 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import "./loginindex.css";
 import ReactDOM from "react-dom";
 import GoogleLogin from "@stack-pulse/next-google-login";
 import { useNavigate } from "react-router-dom";
 
 async function login() {
-  const response = await fetch('/auth/google/callback');
+  const response = await fetch("/auth/google/callback");
+  console.log("Response:", response);
   const data = await response.json();
 
   // Store the JWT in the local storage
-  localStorage.setItem('jwt', data.token);
+  localStorage.setItem("jwt", data.token);
 }
 
 async function getProtectedData() {
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem("jwt");
 
-  const response = await fetch('/auth/protected', {
+  const response = await fetch("/auth/protected", {
     headers: {
-      'Authorization': `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   const data = await response.json();
@@ -28,10 +29,10 @@ function LoginPage() {
   const navigate = useNavigate();
   console.log("LoginPage is being rendered");
   useEffect(() => {
-    const name = localStorage.getItem('name');
+    const name = localStorage.getItem("name");
     // If all the required fields are present, redirect to the ProfileSummary page
     if (name) {
-      navigate('/profile-summary');
+      navigate("/profile-summary");
     }
   }, []);
   const handleFormSubmit = (event) => {
@@ -44,7 +45,7 @@ function LoginPage() {
     // You can send the form data to your backend for authentication
   };
 
-  const responseGoogle = async(response) => {
+  const responseGoogle = async (response) => {
     console.log("Google login response:", response);
     const googleUser = response.profileObj;
     const { tokenId } = response;
@@ -60,7 +61,7 @@ function LoginPage() {
     // console.log("Token Response:", tokenResponse);
     await login();
     navigate("/success");
-    navigate('/birthdate', { state: { name, email, imageUrl, googleId } });
+    navigate("/birthdate", { state: { name, email, imageUrl, googleId } });
   };
 
   return (

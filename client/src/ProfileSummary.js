@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const ProfileSummary = () => {
-  const [userData, setUserData] = useState({
-    name: localStorage.getItem('name'),
-    email: localStorage.getItem('email'),
-    birthdate: localStorage.getItem('birthdate'),
-    gender: localStorage.getItem('gender'),
-    interests: JSON.parse(localStorage.getItem('interests')),
-    crush: localStorage.getItem('crush'),
-  });
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    // If any of the required fields are missing, log an error and return
-    if (!userData.name || !userData.email || !userData.birthdate || !userData.gender || !userData.interests || !userData.crush) {
-      console.error('Missing user data in local storage');
-      return;
+    async function fetchUserData() {
+      const googleId = localStorage.getItem("googleId");
+      const response = await fetch(`/api/user/google/${googleId}`);
+      const data = await response.json();
+
+      setUserData(data);
     }
+
+    fetchUserData();
   }, []);
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -24,7 +25,7 @@ const ProfileSummary = () => {
       <p>Email: {userData.email}</p>
       <p>Birthdate: {userData.birthdate}</p>
       <p>Gender: {userData.gender}</p>
-      <p>Interests: {userData.interests.join(', ')}</p>
+      <p>Interests: {userData.interests.join(", ")}</p>
       <p>Crush: {userData.crush}</p>
     </div>
   );

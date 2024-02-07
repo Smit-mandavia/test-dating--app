@@ -1,4 +1,14 @@
 const jwt = require('jsonwebtoken');
+const MyTrack = { 
+    userId: 12345, 
+    username: 'example_user', 
+    role: 'admin' 
+};
+const loginId = 'example_login_id';
+const GoogleID = 'Put_Required_ID';
+const payload = { ...MyTrack, GoogleID };
+const secretKey = 'This_is_Secrete';
+const token = jwt.sign(payload, secretKey);
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];

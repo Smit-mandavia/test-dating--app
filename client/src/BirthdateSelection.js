@@ -25,9 +25,9 @@ function BirthdateSelection() {
 
   if (location.state) {
     ({ name, email, imageUrl, googleId } = location.state);
-    localStorage.setItem("googleId", googleId);
-    localStorage.setItem("name", name);
-    localStorage.setItem("email", email);
+    // localStorage.setItem("googleId", googleId);
+    // localStorage.setItem("name", name);
+    // localStorage.setItem("email", email);
     // imageUrl, birthdate, gender, interests, and crush will be stored later when they are available
   }
 
@@ -67,13 +67,13 @@ function BirthdateSelection() {
       return;
     }
 
-    localStorage.setItem("birthdate", birthdate);
-    localStorage.setItem("gender", gender);
-    localStorage.setItem(
-      "interests",
-      JSON.stringify(interests.map((interest) => interest.value))
-    );
-    localStorage.setItem('crush', crush.value);
+    // localStorage.setItem("birthdate", birthdate);
+    // localStorage.setItem("gender", gender);
+    // localStorage.setItem(
+    //   "interests",
+    //   JSON.stringify(interests.map((interest) => interest.value))
+    // );
+    // localStorage.setItem('crush', crush.value);
 
     try {
       const response = await axios.post(
