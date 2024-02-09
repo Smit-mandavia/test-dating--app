@@ -12,6 +12,8 @@ const router = express.Router();
 // router.get('/profile', userController.profile);
 router.post('/saveuserData', userController.saveUserData);
 
+router.post('/matchmaking', userController.matchmaking);
+
 // router.post('/saveuser', userController.saveuser);
 router.get('/api/user/google/:googleId', async (req, res) => {
     const googleId = req.params.googleId;

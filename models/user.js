@@ -1,5 +1,14 @@
 // Import Mongoose
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+const MatchingPreferencesSchema = new Schema({
+  _id: { type: Schema.Types.ObjectId, auto: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  min_age: Number,
+  max_age: Number,
+  gender_preference: String,
+});
 
 // Define the user schema
 const UserSchema = new mongoose.Schema({
