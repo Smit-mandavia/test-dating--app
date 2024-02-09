@@ -1,53 +1,59 @@
 const User = require('../models/user');
 const express = require('express');
 const bodyParser = require('body-parser');
+const { use } = require('passport');
 const app = express();
 const PORT = process.env.PORT || 3001;
+const router = express.Router();
+const jwt = require('jsonwebtoken');
+app.use(express.json())
 
+// router.post('/users/saveBirthdate', userController.saveUserData);
 
-exports.saveBirthdate = async (req, res) => {
+// module.exports = router;
+
+exports.saveUserData = async (req, res) => {
     try {
-        const { googleId, birthdate } = req.body;
-        console.log(req.body);
+        const { googleId, name, picture, email, birthdate, gender, interests, crush } = req.body;
+        console.log('Received user data: backend!', req.body);
 
-        // Find the user by Google ID and update the birthdate
-        const user = await User.findOneAndUpdate({ googleId: googleId }, { $set: { birthdate: birthdate } }, { new: true });
+        // Generate JWT token containing the user's Google ID
+        const token = jwt.sign({ googleId }, process.env.JWT_SECRET, { expiresIn: '3d' });
+
+        let user = await User.findOne({ googleId });
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found ! ' + { user } });
-        }
-        if (!birthdate || isNaN(new Date(birthdate))) {
-            return res.status(400).send({ error: 'Invalid birthdate format!' });
+            // If the user does not exist, create a new user
+            user = new User({
+                googleId: googleId,
+                displayName: name,
+                picture: picture,
+                email: email,
+                birthdate: birthdate,
+                gender: gender,
+                interests: interests,
+                crush: crush,
+            });
+        } else {
+            // If the user already exists, update the necessary fields
+            user.displayName = name;
+            user.picture = picture;
+            user.email = email;
+            user.birthdate = birthdate;
+            user.gender = gender;
+            user.interests = interests;
+            user.crush = crush;
         }
 
-        // const user = new User({ birthdate });
         await user.save();
 
-        res.status(200).send({ message: 'Birthdate updated successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ error: 'An error occurred while saving the birthdate' });
-    }
-};
-
-exports.saveuser = async (req, res) => {
-    try {
-        // const { name, email, googleId } = req.body;
-        const userData = req.body;
-        console.log('Received user data: backend!', userData);
-
-        const user = new User({
-            displayName: userData.name,
-            googleId: userData.googleId,
-            picture: userData.picture,
-            email: userData.email,
-            birthdate: userData.birthdate
-        });
-        await user.save();
-
-        res.json({ success: true, message: 'User data saved successfully on backend!' });
+        // Send JWT token along with the response
+        res.json({ success: true, message: 'User data saved successfully on backend!', token });
     } catch (error) {
         console.error(error);
         res.status(500).send({ error: 'An error occurred while saving User data on backend!' });
     }
 };
+
+
+// module.exports = router;

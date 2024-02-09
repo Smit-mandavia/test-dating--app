@@ -13,23 +13,22 @@ const SuccessPage = () => {
   const [googleId, setGoogleId] = useState('');
   const location = useLocation();
   const { state } = location;
+  
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [birthdate, setBirthdate] = useState('');
-
+  
   useEffect(() => {
-    if (state && state.tokenResponse) {
-      const { profileObj } = state.tokenResponse;
-
-      setName(profileObj.name || '');
-      setEmail(profileObj.email || '');
-      setPicture(profileObj.imageUrl || '');
-      setGoogleId(profileObj.googleId || '');
-    }
-
-    // Automatically run the handleUserDataSave function when the component mounts
-    // handleUserDataSave();
-  }, [state]); // Empty dependency array to run the effect only once when the component mounts
+  if (state && state.tokenResponse) {
+    const { profileObj } = state.tokenResponse;
+    setName(profileObj.name || '');
+    setEmail(profileObj.email || '');
+    setPicture(profileObj.imageUrl || '');
+    setGoogleId(profileObj.googleId || '');
+    console.log('State:', state);
+    console.log('Token Response:', state.tokenResponse);
+  }
+}, [state]); // Empty dependency array to run the effect only once when the component mounts
 
   const handleUserDataSave = async () => {
     try {
@@ -40,8 +39,8 @@ const SuccessPage = () => {
         googleId: googleId,
         email: email,
         birthdate: birthdate,
-      });
 
+         });
       // Check if the status code is in the 2xx range
       if (response.status >= 200 && response.status < 300) {
         // Request was successful
@@ -59,7 +58,11 @@ const SuccessPage = () => {
       setSuccessMessage('');
     }
   };
-
+  console.log('Name:', name);
+  console.log('Email:', email);
+  console.log('Picture:', picture);
+  console.log('Google ID:', googleId);
+  console.log('Birthdate:', birthdate);
   return (
     <div className="profile-container">
       <h1>Profile</h1>
