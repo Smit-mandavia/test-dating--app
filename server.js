@@ -4,6 +4,8 @@ const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+//  require('./logger');
+ require('./debug');
 
 dotenv.config();
 

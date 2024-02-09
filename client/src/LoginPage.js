@@ -1,40 +1,58 @@
 import React, { useEffect } from "react";
-import "./loginindex.css";
-import ReactDOM from "react-dom";
 import GoogleLogin from "@stack-pulse/next-google-login";
 import { useNavigate } from "react-router-dom";
+require('./debugger');
+async function loginWithGoogle(tokenId, navigate) {
+  try {
+    const response = await fetch("http://localhost:3000/authenticateGoogle", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tokenId }),
+      
+  
+  
+    });
+  
 
-async function login() {
-  const response = await fetch("/auth/google/callback");
-  console.log("Response:", response);
-  const data = await response.json();
+    if (!response.ok) {
+      throw new Error("Failed to log in");
+    }
 
-  // Store the JWT in the local storage
-  localStorage.setItem("jwt", data.token);
+    const data = await response.json();
+
+    // Store the JWT in local storage
+    localStorage.setItem("jwt", data.token);
+
+    // Optionally, you can store other user-related information
+    localStorage.setItem("userId", data.userId);
+    localStorage.setItem("username", data.username);
+
+    console.log("Login success");
+    global.debugVar(response);
+    // Redirect to a success page or perform other actions as needed
+    // navigate("/success");
+  } catch (error) {
+    console.error("Login failed:", error.message);
+    
+    // Handle the error, show an error message to the user, etc.
+  }
 }
 
-async function getProtectedData() {
-  const token = localStorage.getItem("jwt");
 
-  const response = await fetch("/auth/protected", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const data = await response.json();
-  // Do something with the data
-}
 function LoginPage() {
   const navigate = useNavigate();
   console.log("LoginPage is being rendered");
+
   useEffect(() => {
     const name = localStorage.getItem("name");
     // If all the required fields are present, redirect to the ProfileSummary page
     if (name) {
       navigate("/profile-summary");
     }
-  }, []);
+  }, [navigate]);
+
   const handleFormSubmit = (event) => {
     event.preventDefault();
     // Handle login form submission here
@@ -47,10 +65,18 @@ function LoginPage() {
 
   const responseGoogle = async (response) => {
     console.log("Google login response:", response);
-    const googleUser = response.profileObj;
-    const { tokenId } = response;
-    console.log("Token ID:", tokenId);
-    console.log("Google user information:", googleUser);
+    global.debugVar(response);
+    // Extract tokenId correctly from the response
+    const tokenId = response?.tokenObj?.id_token;
+
+    if (!tokenId) {
+      console.error("Token ID is undefined");
+      // Handle the error or return early
+      return;
+    }
+
+    
+
     const { profileObj, tokenResponse } = response;
     const { name, email, imageUrl, googleId } = profileObj;
 
@@ -59,7 +85,17 @@ function LoginPage() {
     // console.log("Picture:", imageUrl);
     // console.log("Google ID:", googleId);
     // console.log("Token Response:", tokenResponse);
-    await login();
+
+    await loginWithGoogle(tokenId);
+
+    // Optionally, you can store other user-related information
+    // in local storage as well, depending on your application needs
+    localStorage.setItem("name", name);
+    localStorage.setItem("email", email);
+    localStorage.setItem("imageUrl", imageUrl);
+    localStorage.setItem("googleId", googleId);
+    // localStorage.setItem("tokenID",tokenId);
+
     navigate("/success");
     navigate("/birthdate", { state: { name, email, imageUrl, googleId } });
   };
