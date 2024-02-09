@@ -1,31 +1,28 @@
-// Import Mongoose
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const MatchingPreferencesSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, auto: true },
-  user: { type: Schema.Types.ObjectId, ref: 'User' },
+// Define the preference schema
+const PreferenceSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: 'User' }, // Reference to the User table
   min_age: Number,
   max_age: Number,
   gender_preference: String,
 });
 
 // Define the user schema
-const UserSchema = new mongoose.Schema({
+const UserSchema = new Schema({
   googleId: String,
   displayName: String,
-  picture:String,
-  email:String,
+  picture: String,
+  email: String,
   birthdate: Date,
-  gender:String,
-  interests: [{ // Add the new interests field
-    type: String
-  }],
+  gender: String,
+  interests: [String],
   crush: String,
+  preferences: [{ type: Schema.Types.ObjectId, ref: 'Preference' }], // Reference to the Preference table
 });
 
-// Create the user model
-const User = mongoose.model('user', UserSchema);
+const Preference = mongoose.model('Preference', PreferenceSchema);
+const User = mongoose.model('User', UserSchema);
 
-// Export the user model
-module.exports = User;
+module.exports = { User, Preference };
